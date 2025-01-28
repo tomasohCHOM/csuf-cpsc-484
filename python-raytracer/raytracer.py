@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 
 def normalize(vector):
@@ -52,17 +53,17 @@ light = {
     "specular": np.array([1, 1, 1]),
 }
 
+cube_colors = [
+    np.array([0.00, 0.61, 0.28]),  # Green
+    np.array([0.73, 0.00, 0.00]),  # Red
+    np.array([0.00, 0.27, 0.68]),  # Blue
+    np.array([1.00, 0.35, 0.00]),  # Orange
+    np.array([1.00, 1.00, 1.00]),  # White
+    np.array([1.00, 0.84, 0.00]),  # Yellow
+]
+
 objects = [
-    {
-        "center": np.array([-0.2, 0, -1]),
-        "radius": 0.7,
-        "ambient": np.array([0.1, 0, 0]),
-        "diffuse": np.array([0.7, 0, 0]),
-        "specular": np.array([1, 1, 1]),
-        "shininess": 100,
-        "reflection": 0.5,
-    },
-    {
+    {  # Ground
         "center": np.array([0, -9000, 0]),
         "radius": 9000 - 0.7,
         "ambient": np.array([0.1, 0.1, 0.1]),
@@ -75,8 +76,24 @@ objects = [
 
 
 def create_rubiks_cube():
-    pass
+    global cube_colors, objects
+    for x in [-0.4, 0, 0.4]:
+        for y in [-0.4, 0, 0.4]:
+            for z in [0, -0.4, -0.8]:
+                objects.append(
+                    {
+                        "center": np.array([x, y, z]),
+                        "radius": 0.2,
+                        "ambient": np.array([0.1, 0, 0]),
+                        "diffuse": random.choice(cube_colors),
+                        "specular": np.array([1, 1, 1]),
+                        "shininess": 100,
+                        "reflection": 0.5,
+                    }
+                )
 
+
+create_rubiks_cube()
 
 image = np.zeros((height, width, 3))
 for i, y in enumerate(np.linspace(screen[1], screen[3], height)):
