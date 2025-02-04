@@ -26,10 +26,10 @@
 #include <GL/glut.h>    // do NOT say ... tetra.cpp tetra.cpp
 #include <GLFW/glfw3.h> // COMPILE with... (e.g., for tetra.cpp)
 #endif                  // next file
-       // clang++ -Wall -g -lGL -lGLU -lglfw -lglut -o hexahendron
-       // hexahendron.cpp
-       // ...
-       // CAN use g++ -Wall ... if you wish...
+// clang++ -Wall -g -lGL -lGLU -lglfw -lglut -o hexahendron
+// hexahendron.cpp
+// ...
+// CAN use g++ -Wall ... if you wish...
 
 #define ColoredVertex(c, v)                                                    \
   do {                                                                         \
