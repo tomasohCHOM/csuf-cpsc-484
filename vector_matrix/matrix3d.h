@@ -74,7 +74,7 @@ public:
   }
   friend matrix3d<T> operator*(T k, const matrix3d &a) { return a * k; }
   friend matrix3d operator/(const matrix3d &a, T k) {
-    if (abs(k) < epsilon_) {
+    if (std::abs(k) < epsilon_) {
       throw new std::invalid_argument("divide by zero error");
     }
     return a * (1.0 / k);
@@ -378,8 +378,7 @@ template <typename T> T matrix3d<T>::operator()(int row, int col) const {
 template <typename T> T &matrix3d<T>::operator()(int row, int col) {
   return cols_[col][row];
 }
-template <typename T>
-T *matrix3d<T>::opengl_memory(int row, int col) {
+template <typename T> T *matrix3d<T>::opengl_memory(int row, int col) {
   return cols_[col][row];
 }
 //=================================================================================================
@@ -442,8 +441,7 @@ template <typename T> matrix3d<T> matrix3d<T>::operator+(const matrix3d<T> &b) {
   return matrix3d<T>(name_ + "+" + b.name_, dims_,
                      {a[0] + b[0], a[1] + b[1], a[2] + b[2]});
 }
-template <typename T>
-matrix3d<T> matrix3d<T>::operator-(const matrix3d<T> &b) {
+template <typename T> matrix3d<T> matrix3d<T>::operator-(const matrix3d<T> &b) {
   const matrix3d<T> &a = *this;
   check_equal_dims(b);
   return matrix3d<T>(name_ + "-" + b.name_, dims_,
@@ -474,9 +472,9 @@ template <typename T> matrix3d<T> matrix3d<T>::transpose() const {
 }
 template <typename T> T matrix3d<T>::determinant() const {
   const matrix3d<T> &m = *this;
-  return m(0, 0) * ((m(1, 1) * m(2, 2)) - (m(1, 2) * m(2, 1))) 
-         - m(0, 1) * ((m(0, 0) * m(2, 2)) - (m(1, 2) * m(2, 0)))
-         + m(0, 2) * ((m(0, 0) * m(2, 1)) - (m(1, 1) * m(2, 0)));
+  return m(0, 0) * ((m(1, 1) * m(2, 2)) - (m(1, 2) * m(2, 1))) -
+         m(0, 1) * ((m(1, 0) * m(2, 2)) - (m(1, 2) * m(2, 0))) +
+         m(0, 2) * ((m(1, 0) * m(2, 1)) - (m(1, 1) * m(2, 0)));
 }
 template <typename T> T matrix3d<T>::trace() const {
   const matrix3d<T> &m = *this;
@@ -511,19 +509,20 @@ template <typename T> matrix3d<T> matrix3d<T>::minors() const {
 }
 template <typename T> matrix3d<T> matrix3d<T>::cofactor() const {
   const matrix3d<T> &m = *this;
-  return matrix3d<T>(name_ + "_Cofactors", 3, {
-    m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1),
-    m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2),
-    m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0),
+  return matrix3d<T>(name_ + "_Cofactors", 3,
+                     {
+                         m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1),
+                         m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2),
+                         m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0),
 
-    m(0, 2) * m(2, 1) - m(0, 1) * m(2, 2),
-    m(0, 0) * m(2, 2) - m(0, 2) * m(2, 0),
-    m(0, 1) * m(2, 0) - m(0, 0) * m(2, 1),
+                         m(0, 2) * m(2, 1) - m(0, 1) * m(2, 2),
+                         m(0, 0) * m(2, 2) - m(0, 2) * m(2, 0),
+                         m(0, 1) * m(2, 0) - m(0, 0) * m(2, 1),
 
-    m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1),
-    m(0, 2) * m(1, 0) - m(0, 0) * m(1, 2),
-    m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0),
-  });
+                         m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1),
+                         m(0, 2) * m(1, 0) - m(0, 0) * m(1, 2),
+                         m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0),
+                     });
 }
 template <typename T> matrix3d<T> matrix3d<T>::adjoint() const {
   const matrix3d<T> &m = *this;
@@ -535,14 +534,16 @@ template <typename T> matrix3d<T> matrix3d<T>::inverse() const {
 }
 //=================================================================================================
 template <typename T> matrix3d<T> matrix3d<T>::identity(int dims) {
-  matrix3d<T> m = matrix3d("identity " + std::to_string(dims), dims, {0,0,0, 0,0,0, 0,0,0});
+  matrix3d<T> m = matrix3d("identity " + std::to_string(dims), dims,
+                           {0, 0, 0, 0, 0, 0, 0, 0, 0});
   for (int i = 0; i < dims; ++i) {
     m[i][i] = 1;
   }
   return m;
 }
 template <typename T> matrix3d<T> matrix3d<T>::zero(int dims) {
-  return matrix3d("zero " + std::to_string(dims), dims, {0,0,0, 0,0,0, 0,0,0});
+  return matrix3d("zero " + std::to_string(dims), dims,
+                  {0, 0, 0, 0, 0, 0, 0, 0, 0});
 }
 template <typename T> bool matrix3d<T>::operator==(const matrix3d<T> &b) const {
   check_equal_dims(b);
