@@ -112,7 +112,7 @@ public:
   vector3d<T> cross(const vector3d<T> &other) const;
   //---------------------------------------------------------------------
   static vector3d<T> zero();
-  static double value(double val) { return abs(val) < 1e-5 ? 0 : val; }
+  static double value(double val) { return std::abs(val) < 1e-5 ? 0 : val; }
 
   //---------------------------------------------------------------------
   friend std::ostream &operator<<(std::ostream &os, const vector3d<T> &v) {

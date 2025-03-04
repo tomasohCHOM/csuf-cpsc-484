@@ -4,11 +4,11 @@
 #ifndef __matrix_3d__
 #define __matrix_3d__
 
+#include "vector3d.h"
 #include <cmath>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
-#include "vector3d.h"
 
 template <typename T> class matrix3d;
 typedef matrix3d<double> matrix3D;
@@ -68,7 +68,7 @@ public:
 
   friend matrix3d<T> operator*(T k, const matrix3d &a) { return a * k; }
   friend matrix3d operator/(const matrix3d &a, T k) {
-    if (abs(k) < epsilon_) {
+    if (std::abs(k) < epsilon_) {
       throw new std::invalid_argument("divide by zero error");
     }
     return a * (1.0 / k);
@@ -405,7 +405,7 @@ template <typename T> matrix3d<T> &matrix3d<T>::operator*=(T k) {
   return *this;
 }
 template <typename T> matrix3d<T> &matrix3d<T>::operator/=(T k) {
-  if (abs(k) < epsilon_) {
+  if (std::abs(k) < epsilon_) {
     throw new std::invalid_argument("divide by zero\n");
   }
   return operator*=(1.0 / k);
@@ -538,7 +538,7 @@ template <typename T> bool matrix3d<T>::operator==(const matrix3d<T> &b) const {
   T error = T();
   for (int i = 0; i < dims_; ++i) {
     for (int j = 0; j < dims_; ++j) {
-      error += abs((double)(a(i, j) - b(i, j)));
+      error += std::abs((double)(a(i, j) - b(i, j)));
     }
   }
   return error < epsilon_;
